@@ -1,0 +1,9 @@
+{
+  "$schema": "https://aka.ms/azure-quickstart-templates-metadata-schema#",
+  "type": "QuickStart",
+  "itemDisplayName": "Deploy IATSE Local 416",
+  "description": "Deploy a Linux container that has a secret volume using Azure Container Instances.",
+  "summary": "This template deploys my IATSE Local 416 containerized application with secret volumes.",
+  "githubUsername": "daveavid",
+  "dateUpdated": "2020-04-27"
+}
