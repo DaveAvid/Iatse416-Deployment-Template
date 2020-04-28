@@ -112,11 +112,11 @@
               ]
             }
           }
-        ],
+		  }],
         "osType": "Linux",
         "ipAddress": {
           "type": "Public",
-          "dnsNameLabel": "[parameters('dnsnamelabel')]",
+          "dnsNameLabel": "[parameters('dnsnamelabel')]"
         },
         "volumes": [
           {
