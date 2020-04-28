@@ -1,139 +1,146 @@
 {
-  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-  "contentVersion": "1.0.0.0",
-  "parameters": {
-    "containergroupname": {
-      "type": "string",
-      "metadata": {
-        "description": "Name for the container group"
+   "$schema":"https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+   "contentVersion":"1.0.0.0",
+   "parameters":{
+      "containergroupname":{
+         "type":"string",
+         "metadata":{
+            "description":"Name for the container group"
+         },
+         "defaultValue":"iatse416"
       },
-      "defaultValue": "iatse416"
-    },
-    "containername": {
-      "type": "string",
-      "metadata": {
-        "description": "Name for the container"
+      "containername":{
+         "type":"string",
+         "metadata":{
+            "description":"Name for the container"
+         },
+         "defaultValue":"iatse416"
       },
-      "defaultValue": "iatse416"
-    },
-    "imagename": {
-      "type": "string",
-      "metadata": {
-        "description": "Name for the image"
+      "imagename":{
+         "type":"string",
+         "metadata":{
+            "description":"Name for the image"
+         },
+         "defaultValue":"daveavid/iatse:latest"
       },
-      "defaultValue": "daveavid/iatse:latest"
-    },
-    "volumename": {
-      "type": "string",
-      "metadata": {
-        "description": "Name for the secret volume"
+      "volumename":{
+         "type":"string",
+         "metadata":{
+            "description":"Name for the secret volume"
+         },
+         "defaultValue":"volume1"
       },
-      "defaultValue": "volume1"
-    },
-    "dnsnamelabel": {
-      "type": "string",
-      "metadata": {
-        "description": "The DNS name label"
+      "dnsnamelabel":{
+         "type":"string",
+         "metadata":{
+            "description":"The DNS name label"
+         }
+      },
+      "sslcertificateKeyStore":{
+         "type":"securestring",
+         "metadata":{
+            "description":"Base-64 encoded authentication PFX certificate."
+         }
+      },
+      "Iatse416AccessCode":{
+         "type":"securestring",
+         "metadata":{
+            "description":"Base-64 encoded access code for new member registration."
+         }
+      },
+      "cpuCores":{
+         "type":"string",
+         "metadata":{
+            "description":"The number of CPU cores to allocate to the container."
+         },
+         "defaultValue":"1.0"
+      },
+      "memoryInGb":{
+         "type":"string",
+         "metadata":{
+            "description":"The amount of memory to allocate to the container in gigabytes."
+         },
+         "defaultValue":"1.5"
+      },
+      "location":{
+         "type":"string",
+         "defaultValue":"[resourceGroup().location]",
+         "metadata":{
+            "description":"Location for all resources."
+         }
       }
-    },
-    "sslcertificateKeyStore": {
-      "type": "securestring",
-      "metadata": {
-        "description": "Base-64 encoded authentication PFX certificate."
+   },
+   "variables":{
+
+   },
+   "resources":[
+      {
+         "name":"[parameters('containergroupname')]",
+         "type":"Microsoft.ContainerInstance/containerGroups",
+         "apiVersion":"2018-02-01-preview",
+         "location":"[parameters('location')]",
+         "dependsOn":[
+
+         ],
+         "properties":{
+            "containers":[
+               {
+                  "name":"[parameters('containername')]",
+                  "properties":{
+                     "command":[
+
+                     ],
+                     "image":"[parameters('imagename')]",
+                     "restartPolicy":"OnFailure",
+                     "ipAddress":{
+                        "ports":[
+                           {
+                              "protocol":"TCP",
+                              "port":80
+                           },
+                           {
+                              "protocol":"TCP",
+                              "port":443
+                           }
+                        ],
+                        "resources":{
+                           "requests":{
+                              "cpu":"[parameters('cpuCores')]",
+                              "memoryInGb":"[parameters('memoryInGb')]"
+                           }
+                        },
+                        "volumeMounts":[
+                           {
+                              "name":"[parameters('volumename')]",
+                              "mountPath":"/secrets",
+                              "readOnly":false
+                           }
+                        ]
+                     }
+                  }
+               }
+            ],
+            "osType":"Linux",
+            "ipAddress":{
+               "type":"Public",
+               "dnsNameLabel":"[parameters('dnsnamelabel')]"
+            },
+            "volumes":[
+               {
+                  "name":"[parameters('volumename')]",
+                  "secret":{
+                     "sslKeyStore":"[base64(parameters('sslcertificateKeyStore'))]",
+                     "accessCode":"[base64(parameters('Iatse416AccessCode'))]"
+                  }
+               }
+            ]
+         }
       }
-    },
-    "Iatse416AccessCode": {
-      "type": "securestring",
-      "metadata": {
-        "description": "Base-64 encoded access code for new member registration."
+   ],
+   "outputs":{
+      "containerIPAddressFqdn":{
+         "type":"string",
+         "value":"[reference(resourceId('Microsoft.ContainerInstance/containerGroups/', parameters('containergroupname'))).ipAddress.fqdn]"
       }
-    },
-    "cpuCores": {
-      "type": "string",
-      "metadata": {
-        "description": "The number of CPU cores to allocate to the container."
-      },
-      "defaultValue": "1.0"
-    },
-    "memoryInGb": {
-      "type": "string",
-      "metadata": {
-        "description": "The amount of memory to allocate to the container in gigabytes."
-      },
-      "defaultValue": "1.5"
-    },
-    "location": {
-      "type": "string",
-      "defaultValue": "[resourceGroup().location]",
-      "metadata": {
-        "description": "Location for all resources."
-      }
-    }
-  },
-  "variables": {},
-  "resources": [
-    {
-      "name": "[parameters('containergroupname')]",
-      "type": "Microsoft.ContainerInstance/containerGroups",
-      "apiVersion": "2018-02-01-preview",
-      "location": "[parameters('location')]",
-      "dependsOn": [],
-      "properties": {
-        "containers": [
-          {
-            "name": "[parameters('containername')]",
-            "properties": {
-              "command": [],
-              "image": "[parameters('imagename')]",
-              "restartPolicy": "OnFailure",
-              "ipAddress": {
-                  "ports": [
-                      {
-                          "protocol": "TCP",
-                          "port": 80
-                      },
-                      {
-                          "protocol": "TCP",
-                          "port": 443
-                      }
-                  ],
-              "resources": {
-                "requests": {
-                  "cpu": "[parameters('cpuCores')]",
-                  "memoryInGb": "[parameters('memoryInGb')]"
-                }
-              },
-              "volumeMounts": [
-                {
-                  "name": "[parameters('volumename')]",
-                  "mountPath": "/secrets",
-                  "readOnly": false
-                }
-              ]
-            }
-          }
-		  }],
-        "osType": "Linux",
-        "ipAddress": {
-          "type": "Public",
-          "dnsNameLabel": "[parameters('dnsnamelabel')]"
-        },
-        "volumes": [
-          {
-            "name": "[parameters('volumename')]",
-            "secret": {
-              "sslKeyStore": "[base64(parameters('sslcertificateKeyStore'))]",
-              "accessCode": "[base64(parameters('Iatse416AccessCode'))]"
-            }
-          }
-        ]
-      }
-    }
-  ],
-  "outputs": {
-    "containerIPAddressFqdn": {
-      "type": "string",
-      "value": "[reference(resourceId('Microsoft.ContainerInstance/containerGroups/', parameters('containergroupname'))).ipAddress.fqdn]"
-    }
-  }
+   }
 }
