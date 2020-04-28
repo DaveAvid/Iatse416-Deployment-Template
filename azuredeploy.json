@@ -87,11 +87,7 @@
                {
                   "name":"[parameters('containername')]",
                   "properties":{
-                     "command":[
-
-                     ],
                      "image":"[parameters('imagename')]",
-                     "restartPolicy":"OnFailure",
                      "ipAddress":{
                         "ports":[
                            {
