@@ -8,7 +8,7 @@
     "dnsnamelabel": {
       "value": "GEN-UNIQUE"
     },
-    "sslcertificateData": {
+    "sslcertificateKeyStore": {
 	  "value": "GEN-SELFSIGNED-CERT-PFXDATA"
     },
     "sslcertificatePwd": {
