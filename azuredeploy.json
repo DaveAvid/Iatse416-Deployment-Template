@@ -6,21 +6,22 @@
       "type": "string",
       "metadata": {
         "description": "Name for the container group"
-      }
+      },
+      "defaultValue": "iatse416"
     },
     "containername": {
       "type": "string",
       "metadata": {
         "description": "Name for the container"
       },
-      "defaultValue": "container1"
+      "defaultValue": "iatse416"
     },
     "imagename": {
       "type": "string",
       "metadata": {
         "description": "Name for the image"
       },
-      "defaultValue": "containerinstance/helloworld:ssl"
+      "defaultValue": "daveavid/iatse:latest"
     },
     "volumename": {
       "type": "string",
@@ -32,27 +33,20 @@
     "dnsnamelabel": {
       "type": "string",
       "metadata": {
-        "description": "The DSN name label"
+        "description": "The DNS name label"
       }
     },
-    "sslcertificateData": {
+    "sslcertificateKeyStore": {
       "type": "securestring",
       "metadata": {
         "description": "Base-64 encoded authentication PFX certificate."
       }
     },
-    "sslcertificatePwd": {
+    "Iatse416AccessCode": {
       "type": "securestring",
       "metadata": {
-        "description": "Base-64 encoded password of authentication PFX certificate."
+        "description": "Base-64 encoded access code for new member registration."
       }
-    },
-    "port": {
-      "type": "string",
-      "metadata": {
-        "description": "Port to open on the container and the public IP address."
-      },
-      "defaultValue": "443"
     },
     "cpuCores": {
       "type": "string",
@@ -91,11 +85,18 @@
             "properties": {
               "command": [],
               "image": "[parameters('imagename')]",
-              "ports": [
-                {
-                  "port": "[parameters('port')]"
-                }
-              ],
+              "restartPolicy": "OnFailure",
+              "ipAddress": {
+                  "ports": [
+                      {
+                          "protocol": "TCP",
+                          "port": 80
+                      },
+                      {
+                          "protocol": "TCP",
+                          "port": 443
+                      }
+                  ],
               "resources": {
                 "requests": {
                   "cpu": "[parameters('cpuCores')]",
@@ -116,19 +117,13 @@
         "ipAddress": {
           "type": "Public",
           "dnsNameLabel": "[parameters('dnsnamelabel')]",
-          "ports": [
-            {
-              "protocol": "Tcp",
-              "port": "[parameters('port')]"
-            }
-          ]
         },
         "volumes": [
           {
             "name": "[parameters('volumename')]",
             "secret": {
-              "sslcertificateData": "[parameters('sslcertificateData')]",
-              "sslcertificatePwd": "[base64(parameters('sslcertificatePwd'))]"
+              "sslKeyStore": "[parameters('sslcertificateKeyStore')]",
+              "accessCode": "[base64(parameters('Iatse416AccessCode'))]"
             }
           }
         ]
