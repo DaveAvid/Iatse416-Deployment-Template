@@ -106,7 +106,7 @@
               "volumeMounts": [
                 {
                   "name": "[parameters('volumename')]",
-                  "mountPath": "/mnt/secrets",
+                  "mountPath": "/secrets",
                   "readOnly": false
                 }
               ]
@@ -122,7 +122,7 @@
           {
             "name": "[parameters('volumename')]",
             "secret": {
-              "sslKeyStore": "[parameters('sslcertificateKeyStore')]",
+              "sslKeyStore": "[base64(parameters('sslcertificateKeyStore')]",
               "accessCode": "[base64(parameters('Iatse416AccessCode'))]"
             }
           }
