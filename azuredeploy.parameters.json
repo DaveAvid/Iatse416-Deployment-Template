@@ -11,7 +11,7 @@
     "sslcertificateKeyStore": {
 	  "value": "GEN-SELFSIGNED-CERT-PFXDATA"
     },
-    "sslcertificatePwd": {
+    "Iatse416AccessCode": {
 	  "value": "GEN-SELFSIGNED-CERT-PASSWORD"
     }
   }
